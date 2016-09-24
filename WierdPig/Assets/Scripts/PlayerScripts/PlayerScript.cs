@@ -13,6 +13,8 @@ public class PlayerScript : MonoBehaviour {
     Vector2 expPos;
     //Scene camera TODO - refactor this 
     GameObject camera;
+    //Player object
+    GameObject player;
     //Player health
     int hp = 3;
     //Rigidbody 2D of player
@@ -42,8 +44,12 @@ public class PlayerScript : MonoBehaviour {
         //Check health
         if (hp <=0)
             Die();
-
-	}
+        // if player is too far behind camera then increase speed to catch up
+        if (transform.position.x < camera.transform.position.x - 3)
+        {
+            transform.Translate(Vector2.right * speed / 10 * Time.deltaTime);
+        }
+    }
 
     /// <summary>
     /// Handles collision logic 

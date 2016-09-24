@@ -67,7 +67,7 @@ public class StartGameScript : MonoBehaviour {
         camera.GetComponent<RunScript>().enabled = true;
         camera.GetComponent<InGameScoreScript>().enabled = true;
         camera.GetComponent<TerrainSpawnerScript>().enabled = true;
-        camera.GetComponent<CameraPosScript>().enabled = true;
+        camera.GetComponent<CameraScript>().enabled = true;
         camera.GetComponent<ScenerySpawnerScript>().enabled = true;
         GameObject.Find("LoadingBar").SetActive(false);
         uiCanvas.GetComponent<Canvas>().enabled = true;
