@@ -8,7 +8,8 @@ public class MoveRightScript : MonoBehaviour {
     void Start()
     {
         camera = GameObject.Find("Main Camera");
-        speed = (camera.GetComponent<RunScript>().speed)/2;
+        speed = camera.GetComponent<PlayerScript>().GetSpeed();
+        speed = speed / 2;
     }
     void Update() // moves gameObject right at half players speed
     {

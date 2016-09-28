@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour {
 
@@ -11,10 +12,13 @@ public class PlayerScript : MonoBehaviour {
     Vector2 dieForce;
     //Position of "explosion" to be used for explosive force
     Vector2 expPos;
-    //Scene camera TODO - refactor this 
-    GameObject camera;
+    [SerializeField]
     //Player object
     GameObject player;
+    //Countdown Text object
+    Text countdownText;
+    //Countdown integer
+    int countdown = 3;
     //Player health
     int hp = 3;
     //Rigidbody 2D of player
@@ -23,29 +27,34 @@ public class PlayerScript : MonoBehaviour {
     float scoreScreenDelay = 2.0f;
     //Game Timer
     float timer = 0;
+    //Game is started boolean
+    bool isStarted = false;
     void Start()
     {
-        //Get camera - TODO refactor this
-        camera = GameObject.Find("Main Camera");
         //Set explosion force vector
         dieForce = new Vector2(-300.0f, 300.0f);
         //Set explosion force position vector
-        expPos = new Vector2(gameObject.transform.position.x + (gameObject.GetComponent<Collider2D>().bounds.extents.x) / 2, gameObject.transform.position.y - (gameObject.GetComponent<Collider2D>().bounds.extents.y) / 2);
+        expPos = new Vector2(player.transform.position.x + (player.GetComponent<Collider2D>().bounds.extents.x) / 2, player.transform.position.y - (player.GetComponent<Collider2D>().bounds.extents.y) / 2);
         //Init player rigidbody
-        playerRigidBody = playerRigidBody.GetComponent<Rigidbody2D>();
+        playerRigidBody = player.GetComponent<Rigidbody2D>();
+        //Find countdown text object
+        countdownText = GameObject.Find("LoadingText").GetComponent<Text>();
+        //Call start game function
+        StartGame();
     }
 
-    void Update () 
-    {
+    void Update ()
+    { 
+        if(isStarted)
         //Move player to right at run speed using modified timescale
-        transform.Translate(Vector2.right * speed * Time.deltaTime);
+            transform.Translate(Vector2.right * speed * Time.deltaTime);
         //Update Timer
         timer += Time.deltaTime;
         //Check health
         if (hp <=0)
             Die();
         // if player is too far behind camera then increase speed to catch up
-        if (transform.position.x < camera.transform.position.x - 3)
+        if (transform.position.x < gameObject.transform.position.x - 3)
         {
             transform.Translate(Vector2.right * speed / 10 * Time.deltaTime);
         }
@@ -56,7 +65,7 @@ public class PlayerScript : MonoBehaviour {
     /// Uses string passed from OnTriggerEnter method to implement specific collision logic
     /// </summary>
     /// <param name="collider">colliding objects tag as string</param>
-    void HandleCollisions(string collider)
+    public void HandleCollisions(string collider)
     {
         switch (collider)
         {
@@ -98,7 +107,7 @@ public class PlayerScript : MonoBehaviour {
         //TODO update final multiplier in gameControlScript for use in score
         GameController.SetFinalMultiplier();
         //Update new score property
-        PlayerPrefs.SetFloat("newScore", camera.GetComponent<InGameScoreScript>().time);
+        PlayerPrefs.SetFloat("newScore", GameController.CalculateScore());
         //Update time variable in ControlScript
         GameController.SetTime(timer);
         //Disable Collider and Fixed angle of player
@@ -114,14 +123,64 @@ public class PlayerScript : MonoBehaviour {
     {
 
     }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        //Call collision handelling method since more functionality is availiable outside this method
-        HandleCollisions(other.gameObject.tag.ToString());
-    }
 
     void ResetToCheckpoint()
     {
 
+    }
+
+    public void DecrementHp()
+    {
+        hp--;
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
+    /// <summary>
+    /// Method invoked to start game
+    /// </summary>
+    public void StartGame()
+    {
+        //Get all game objects
+        GameObject[] allGameObjects = Object.FindObjectsOfType<GameObject>();
+        //Set countdown text to 3
+        countdownText.text = countdown.ToString();
+        //Enable all game objects
+        foreach (GameObject go in allGameObjects)
+            go.SetActive(true);
+        Invoke("Countdown", 1.0f);
+    }
+    /// <summary>
+    /// Count down from 3 at start of game and at each checkpoint
+    /// </summary>
+    /// <param name="countdown">integer to be displayed</param>
+    /// <param name="countdownText">GUI GameObject for text to be mapped</param>
+    void Countdown()
+    {
+        //Decrement countdown 
+        countdown -= 1;
+        //Update countdown text with countdown int to string
+        countdownText.GetComponent<Text>().text = countdown.ToString();
+        //if countdown > 1 
+        if (countdown >= 1)
+            //Keep counting down
+            Invoke("Countdown", 1.0f);
+        else
+        {
+            //else set text to GO! and Delete text object after 2 seconds
+            countdownText.GetComponent<Text>().text = "GO!";
+            isStarted = true;
+            Invoke("DeleteText", 2.0f);
+         }
+    }
+    /// <summary>
+    /// Erase contents of countdown text
+    /// </summary>
+    void DeleteText()
+    {
+        countdownText.GetComponent<Text>().text = "";
     }
 }

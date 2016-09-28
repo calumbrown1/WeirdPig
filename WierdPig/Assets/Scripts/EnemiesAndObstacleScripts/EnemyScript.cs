@@ -3,53 +3,73 @@ using System.Collections;
 
 public class EnemyScript : MonoBehaviour {
 
-    public int speed;
-    public int bounty;
-    public GameObject scoreObj;
-    Vector2 dieForce;
-    GameObject player;
+    [SerializeField]
+    //+10 graphic object created when enemy dies
+    GameObject scoreObj;
+    //force the enemy pings away at
+    Vector2 dieForce = new Vector2(300.0f, 300.0f);
+    //position force is applied at
     Vector2 expPos;
+    //player object
+    GameObject player;
+    //Player Script
+    PlayerScript playerScript;
     void Start()
     {
-        dieForce = new Vector2(300.0f, 300.0f);
+        //Get player
         player = GameObject.Find("Player");
+        //Get player script
+        playerScript = player.GetComponent<PlayerScript>();
+        //Calculate expPos
         expPos = new Vector2(player.transform.position.x + (player.GetComponent<Collider2D>().bounds.extents.x) / 2, player.transform.position.y - (player.GetComponent<Collider2D>().bounds.extents.y) / 2);
+    } 
+
+
+    void Update()
+    {
+        //If enemy falls behind player too far then destroy it
         if (transform.position.x < player.transform.position.x - 20)
         {
-            Debug.Log("dead enemy");
             Destroy(gameObject);
         }
-    } 
+    }
+    /// <summary>
+    /// Handle collisions 
+    /// </summary>
+    /// <param name="other">Collider enemy is colliding with</param>
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player") // if hits player do end game stuff
         {
             //Handheld.Vibrate();
+            //Get position of player
             Vector2 playerPos = player.transform.position;
-            if(playerPos.y >= (transform.position.y + 0.25)) //IF PLAYER LANDS ON ENEMY FROM ABOVE
+            //If player is above enemy then kill it
+            if(playerPos.y >= (transform.position.y + 0.25)) 
             {
                 Ping();
             }
-            else //IF PLAYER COLLIDES WITH ENEMY ON LEVEL OR BELOW THEN HURT IT 
+            //if player is below or on the same level as enemy damage player and kill enemy
+            else
             {
-                Debug.Log("hurt by enemy, player pos y : " + playerPos.y.ToString() + " | enemy pos y :" + transform.position.y.ToString());
-                GameObject.Find("Player").GetComponent<HealthScript>().DecHealth();
+                //Decrement player hp
+                playerScript.DecrementHp();
+                //Kill enemy
                 Ping();
             }
             
         }
-        if(other.gameObject.tag == "Proj") // if hits projectile spawn +10 thing, inc score and die
-        {
-            Instantiate(scoreObj, transform.position, transform.rotation);
-            GameObject.Find("Main Camera").GetComponent<InGameScoreScript>().IncEnemiesKilled();
-            Destroy(other.gameObject);
-            Ping();
-        }
     }
+    /// <summary>
+    /// Ping enemy away from player
+    /// </summary>
     void Ping()
     {
+        //Disable enemy collider
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        //Disable Fixed camera
         gameObject.GetComponent<Rigidbody2D>().fixedAngle = false;
+        //Add force to ping enemy away
         gameObject.GetComponent<Rigidbody2D>().AddForceAtPosition(dieForce, expPos);
     }
 }

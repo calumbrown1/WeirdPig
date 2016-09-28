@@ -63,9 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraScripts\CameraScript.cs" />
+    <Compile Include="Assets\Scripts\CollisionScript.cs" />
     <Compile Include="Assets\Scripts\ControlScripts\FakeLoadingScript.cs" />
     <Compile Include="Assets\Scripts\ControlScripts\GameControlScript.cs" />
-    <Compile Include="Assets\Scripts\ControlScripts\InGameScoreScript.cs" />
     <Compile Include="Assets\Scripts\ControlScripts\StartGameScript.cs" />
     <Compile Include="Assets\Scripts\EnemiesAndObstacleScripts\EnemyDieScript.cs" />
     <Compile Include="Assets\Scripts\EnemiesAndObstacleScripts\EnemyScript.cs" />
@@ -79,14 +79,9 @@
     <Compile Include="Assets\Scripts\MovementScripts\MoveRightScript.cs" />
     <Compile Include="Assets\Scripts\MovementScripts\MoveUpScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\CheckpointScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\DieScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\HealthScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\JumpScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\ProjectileScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\RunScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\ShootScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\ShootingScript.cs" />
     <Compile Include="Assets\Scripts\TerrainScripts\ScenerySpawnerScript.cs" />
     <Compile Include="Assets\Scripts\TerrainScripts\TerrainSpawnerScript.cs" />
     <Compile Include="Assets\Scripts\TimeOutScript.cs" />

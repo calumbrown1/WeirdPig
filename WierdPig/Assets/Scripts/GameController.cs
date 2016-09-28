@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+
 public static class GameController {
 
     #region Score Calculating Variables
@@ -37,7 +38,7 @@ public static class GameController {
     /// Calculate score using score based variables
     /// </summary>
     /// <returns> Returns casted int of score variable after calculation </returns>
-    static int CalculateScore()
+    public static int CalculateScore()
     {
         //Calculate Score using time, enemies killed and final speed multiplier
         //Calculation = (time + (enemies killed times enemies multiplier)) * speed multiplier
@@ -95,4 +96,6 @@ public static class GameController {
     {
         return speedInc;
     }
+
+
 }
