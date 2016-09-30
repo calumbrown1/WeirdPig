@@ -61,8 +61,6 @@ public class StartGameScript : MonoBehaviour {
         {
             gobj.SetActive(true);
         }
-        jumpButt.GetComponent<JumpScript>().enabled = true;
-        shootButt.GetComponent<ShootScript>().enabled = true;
         camera = gameObject;
         //camera.GetComponent<RunScript>().enabled = true;
         camera.GetComponent<TerrainSpawnerScript>().enabled = true;

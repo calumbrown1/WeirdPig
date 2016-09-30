@@ -15,8 +15,12 @@ public class EnemyDieScript : MonoBehaviour {
             parentObj.GetComponent<Rigidbody2D>().AddForceAtPosition(new Vector2(300.0f, 300.0f), new Vector2(transform.position.x,transform.position.y + transform.gameObject.GetComponent<Collider2D>().bounds.extents.y * 2));
             if(flying == true)
             {
-                Vector2 jumpForce = GameObject.Find("JumpButton").GetComponent<JumpScript>().jumpForce;
+                /*
+                Commented ous while decide what to do with it 
+                TODO REFACTOR THIS
+                Vector2 jumpForce = GameObject.Find("Player").GetComponent<PlayerScript>().jumpForce;
                 col.gameObject.GetComponent<Rigidbody2D>().AddForce(jumpForce);
+                */
             }
         }
     }

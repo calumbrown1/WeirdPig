@@ -79,9 +79,7 @@
     <Compile Include="Assets\Scripts\MovementScripts\MoveRightScript.cs" />
     <Compile Include="Assets\Scripts\MovementScripts\MoveUpScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\CheckpointScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\JumpScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\ShootScript.cs" />
     <Compile Include="Assets\Scripts\TerrainScripts\ScenerySpawnerScript.cs" />
     <Compile Include="Assets\Scripts\TerrainScripts\TerrainSpawnerScript.cs" />
     <Compile Include="Assets\Scripts\TimeOutScript.cs" />
