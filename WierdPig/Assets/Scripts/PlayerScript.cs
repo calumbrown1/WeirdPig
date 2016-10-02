@@ -76,12 +76,14 @@ public class PlayerScript : MonoBehaviour {
         //Update Timer
         timer += Time.deltaTime;
         //Check health
-        if (hp <=0)
+        if (hp <= 0)
+        {
             Die();
-        // if player is too far behind camera then increase speed to catch up
-        if (transform.position.x < gameObject.transform.position.x - 3)
-            transform.Translate(Vector2.right * speed / 10 * Time.deltaTime);
+        }
 
+        // if player is too far behind camera then increase speed to catch up
+        if (player.transform.position.x < transform.position.x - 3)
+            player.transform.Translate(Vector2.right * speed / 10 * Time.deltaTime);
         #region Jumping code
         //get gravity scale
         float graveScale = playerRigidBody.gravityScale;
@@ -118,6 +120,7 @@ public class PlayerScript : MonoBehaviour {
         #endregion
     }
 
+    #region jumping stuff
     void Jump()
     {
         if (IsGrounded())
@@ -128,6 +131,7 @@ public class PlayerScript : MonoBehaviour {
     {
         return Physics2D.Raycast(player.transform.position, -Vector2.up, groundDist + 0.1f);
     }
+    #endregion
 
     #region Player Damage, Death and Score Screen
     /// <summary>
@@ -181,6 +185,7 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     void Die()
     {
+        Debug.Log("Dying");
         //TODO update final multiplier in gameControlScript for use in score
         GameController.SetFinalMultiplier();
         //Update new score property
@@ -234,7 +239,7 @@ public class PlayerScript : MonoBehaviour {
     public void StartGame()
     {
         //Get all game objects
-        GameObject[] allGameObjects = Object.FindObjectsOfType<GameObject>();
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
         //Set countdown text to 3
         countdownText.text = countdown.ToString();
         //Enable all game objects
@@ -273,4 +278,6 @@ public class PlayerScript : MonoBehaviour {
         countdownText.GetComponent<Text>().text = "";
     }
     #endregion
+
+
 }
