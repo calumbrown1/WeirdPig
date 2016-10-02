@@ -10,6 +10,7 @@ public class EnemyScript : MonoBehaviour {
     Vector2 dieForce = new Vector2(300.0f, 300.0f);
     //position force is applied at
     Vector2 expPos;
+    [SerializeField]
     //player object
     GameObject player;
     //Player Script
@@ -19,7 +20,7 @@ public class EnemyScript : MonoBehaviour {
         //Get player
         player = GameObject.Find("Player");
         //Get player script
-        playerScript = player.GetComponent<PlayerScript>();
+        playerScript = player.transform.parent.GetComponent<PlayerScript>();
         //Calculate expPos
         expPos = new Vector2(player.transform.position.x + (player.GetComponent<Collider2D>().bounds.extents.x) / 2, player.transform.position.y - (player.GetComponent<Collider2D>().bounds.extents.y) / 2);
     } 
@@ -37,10 +38,11 @@ public class EnemyScript : MonoBehaviour {
     /// Handle collisions 
     /// </summary>
     /// <param name="other">Collider enemy is colliding with</param>
-    void OnTriggerEnter2D(Collider2D other)
+    void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player") // if hits player do end game stuff
+        if (other.gameObject.tag == "Player") 
         {
+            Debug.Log("PING");
             //Handheld.Vibrate();
             //Get position of player
             Vector2 playerPos = player.transform.position;
@@ -65,6 +67,7 @@ public class EnemyScript : MonoBehaviour {
     /// </summary>
     void Ping()
     {
+        Debug.Log("PING");
         //Disable enemy collider
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
         //Disable Fixed camera

@@ -1,32 +1,62 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Script responsible for generation of backround scenery and platform terrain
+/// </summary>
 public class TerrainSpawnerScript : MonoBehaviour {
 
-    public GameObject[] platforms;
-    public GameObject player;
-    public float[] lengths;
-    public int iMaxPlatLength;
-    public GameObject obstacle;
-    public GameObject emptyObj;
-    public GameObject speedUp;
-    public GameObject enemy;
-    public GameObject flyingEnemy;
+    //Array of platform segments
+    [SerializeField]
+    GameObject[] platforms;
+    //Player object
+    GameObject player;
+    //Obstacle object to generate on platform
+    [SerializeField]
+    GameObject obstacle;
+    //Empty gameobject to generate as parent for segments (makes scene neater)
+    [SerializeField]
+    GameObject emptyObj;
+    //speedup "powerup" prefab
+    [SerializeField]
+    GameObject speedUp;
+    //array of enemy prefabs
+    [SerializeField]
+    GameObject[] enemies;
+    //star object
+    [SerializeField]
+    GameObject star;
+    //planet object
+    [SerializeField]
+    GameObject planet;
+    //spawn position to use for creation of platform segments
     Vector2 spawnPos;
+    //position of previously spawned platform
     Vector2 prevBlockPos;
+    //length player can jump, used to calc distance between platformns
     float jumpLength;
+    //previous block generated
     GameObject gPrevBlock;
+    //array of possibly y axis positions for platform
     float[] fYPosArray;
-    public GameObject[] gCurPlatform;
+    //array of segments that make up platform
+    GameObject[] gCurPlatform;
+    //number of platforms generated
     int platformsGenerated = 0;
+
     void Start()
     {
+        player = GameObject.Find("Player");
         fYPosArray = new float[4];
         InvokeRepeating("MakeNewPlatform", 0.0f, 2.0f);
         gPrevBlock = GameObject.Find("RockRight");
         InitialiseYPosArray();
+        SpawnStartingStuff();
+        InvokeRepeating("SpawnStars", 0.1f, 0.1f);
+        InvokeRepeating("SpawnPlanets", 10.0f, 30.0f);
     }
 
+    #region platform generation
     void InitialiseYPosArray()
     {
         for (int i = 0; i < 4; i++)
@@ -105,14 +135,6 @@ public class TerrainSpawnerScript : MonoBehaviour {
             }
         }
     }
-    void SpawnSpeedUp(GameObject[] platform)
-    {
-        Vector2 spawnPos = new Vector2();
-        GameObject middleBlock = platform[(int)(platform.Length / 2)];
-        spawnPos.x = middleBlock.transform.position.x;
-        spawnPos.y = middleBlock.transform.position.y + 2;
-        Instantiate(speedUp, spawnPos, transform.rotation);
-    }
     void CombineSections (GameObject[] platform)
     {
         //cache positions of first and last platform sections
@@ -131,6 +153,9 @@ public class TerrainSpawnerScript : MonoBehaviour {
         }
         platformsGenerated++;
     }
+    #endregion
+
+    #region enemy and obstacle generation
     void SpawnObstacles(GameObject[] platform)
     {
         //caching length of platform
@@ -160,7 +185,6 @@ public class TerrainSpawnerScript : MonoBehaviour {
             obs.transform.Rotate(new Vector3(0, 0, 1), 180);
         }
     }
-
     void SpawnEnemies(GameObject[] platform)
     {
         //random int to dictate if spawned enemy is flying or normal
@@ -176,14 +200,72 @@ public class TerrainSpawnerScript : MonoBehaviour {
             //spawn normal enemy
             //y position of enemy = the y position of the platform + twice the height of the enemy
             spawnPos.y = spawnPlatform.transform.position.y + 2;
-            Instantiate(enemy, spawnPos, transform.rotation);
+            Instantiate(enemies[0], spawnPos, transform.rotation);
         }
         else
         {
             //spawn flying enemy
             //y position of enemy = the y position of the platform + five times the height of the enemy
             spawnPos.y = spawnPlatform.transform.position.y + 1;
-            Instantiate(flyingEnemy, spawnPos, transform.rotation);
+            Instantiate(enemies[1], spawnPos, transform.rotation);
         }
     }
+    void SpawnSpeedUp(GameObject[] platform)
+    {
+        Vector2 spawnPos = new Vector2();
+        GameObject middleBlock = platform[(int)(platform.Length / 2)];
+        spawnPos.x = middleBlock.transform.position.x;
+        spawnPos.y = middleBlock.transform.position.y + 2;
+        Instantiate(speedUp, spawnPos, transform.rotation);
+    }
+    #endregion
+
+    #region background generation
+    /// <summary>
+    /// Spawn background objects at start of game
+    /// </summary>
+    void SpawnStartingStuff()
+    {
+        //generate number of stars
+        int noStars = Random.Range(15, 30);
+        //spawn random number of stars
+        for (int i = 0; i < noStars; i++)
+        {
+            spawnPos.x = Random.Range(-15, 15);
+            spawnPos.y = Random.Range(-8, 8);
+            Instantiate(star, spawnPos, transform.rotation);
+        }
+        //modify spawnpos for planet 
+        spawnPos.x = Random.Range(-8, 8);
+        spawnPos.y = Random.Range(-2, 4);
+        //generate new planet
+        GameObject gNewPlanet = (GameObject)Instantiate(planet, spawnPos, transform.rotation);
+        gNewPlanet.transform.parent = gameObject.transform;
+    }
+
+    /// <summary>
+    /// Spawn random number of stars
+    /// </summary>
+    void SpawnStars()
+    {
+        int noStars = Random.Range(0, 3);
+        for (int i = 0; i < noStars; i++)
+        {
+            spawnPos.x = player.transform.position.x + 8;
+            spawnPos.y = player.transform.position.y + Random.Range(-5, 5);
+            Instantiate(star, spawnPos, transform.rotation);
+        }
+    }
+    /// <summary>
+    /// Spawn a planet background object
+    /// </summary>
+    void SpawnPlanets()
+    {
+        spawnPos.x = player.transform.position.x + 8;
+        spawnPos.y = player.transform.position.y + Random.Range(-2, 4);
+        GameObject gNewPlanet = (GameObject)Instantiate(planet, spawnPos, transform.rotation);
+        gNewPlanet.transform.parent = gameObject.transform;
+    }
+
+    #endregion
 }

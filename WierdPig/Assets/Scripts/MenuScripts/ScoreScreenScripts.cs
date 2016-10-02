@@ -20,6 +20,7 @@ public class ScoreScreenScripts : MonoBehaviour {
     float multiplier;
     public List<float> scores;
 
+    /*
 	void Start () 
     {
         SortHighScores();
@@ -45,6 +46,7 @@ public class ScoreScreenScripts : MonoBehaviour {
         totalScoreText.text = "Total Score : " + Mathf.Round(totalScore);
         if (score > highScore) PlayerPrefs.SetFloat("highscore", score);
 	}
+    */
 
 
     void SortHighScores()

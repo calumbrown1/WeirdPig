@@ -62,26 +62,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\CameraScripts\CameraScript.cs" />
+    <Compile Include="Assets\Scripts\CameraScript.cs" />
+    <Compile Include="Assets\Scripts\CheckpointScript.cs" />
     <Compile Include="Assets\Scripts\CollisionScript.cs" />
-    <Compile Include="Assets\Scripts\ControlScripts\FakeLoadingScript.cs" />
-    <Compile Include="Assets\Scripts\ControlScripts\GameControlScript.cs" />
-    <Compile Include="Assets\Scripts\ControlScripts\StartGameScript.cs" />
-    <Compile Include="Assets\Scripts\EnemiesAndObstacleScripts\EnemyDieScript.cs" />
-    <Compile Include="Assets\Scripts\EnemiesAndObstacleScripts\EnemyScript.cs" />
-    <Compile Include="Assets\Scripts\EnemiesAndObstacleScripts\EnemySpawnerScript.cs" />
+    <Compile Include="Assets\Scripts\EnemyScript.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\KillZoneScript.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\ButtonScript.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\HighScoreScreenScript.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\ScoreScreenScripts.cs" />
-    <Compile Include="Assets\Scripts\MovementScripts\MoveLeftScript.cs" />
-    <Compile Include="Assets\Scripts\MovementScripts\MoveRightScript.cs" />
-    <Compile Include="Assets\Scripts\MovementScripts\MoveUpScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\CheckpointScript.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\PlayerScript.cs" />
-    <Compile Include="Assets\Scripts\TerrainScripts\ScenerySpawnerScript.cs" />
-    <Compile Include="Assets\Scripts\TerrainScripts\TerrainSpawnerScript.cs" />
+    <Compile Include="Assets\Scripts\MoveDirectionScript.cs" />
+    <Compile Include="Assets\Scripts\PlayerScript.cs" />
+    <Compile Include="Assets\Scripts\TerrainSpawnerScript.cs" />
     <Compile Include="Assets\Scripts\TimeOutScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

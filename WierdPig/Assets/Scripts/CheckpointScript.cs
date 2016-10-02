@@ -20,7 +20,7 @@ public class CheckpointScript : MonoBehaviour {
         {
             if (hits[i].transform.gameObject.tag == "Platform")
             {
-                Debug.Log(hits[i].transform.position.x);
+                //Debug.Log(hits[i].transform.position.x);
                 checkpointPlatform = hits[i].transform.gameObject;
             }
         }
