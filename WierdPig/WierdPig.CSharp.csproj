@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraScript.cs" />
     <Compile Include="Assets\Scripts\CheckpointScript.cs" />
-    <Compile Include="Assets\Scripts\CollisionScript.cs" />
     <Compile Include="Assets\Scripts\EnemyScript.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\KillZoneScript.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="Assets\Scripts\MenuScripts\HighScoreScreenScript.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\ScoreScreenScripts.cs" />
     <Compile Include="Assets\Scripts\MoveDirectionScript.cs" />
+    <Compile Include="Assets\Scripts\PlayerCollisionScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
     <Compile Include="Assets\Scripts\TerrainSpawnerScript.cs" />
     <Compile Include="Assets\Scripts\TimeOutScript.cs" />
