@@ -42,18 +42,19 @@ public class EnemyScript : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player") 
         {
-            Debug.Log("PING");
             //Handheld.Vibrate();
             //Get position of player
             Vector2 playerPos = player.transform.position;
             //If player is above enemy then kill it
             if(playerPos.y >= (transform.position.y + 0.25)) 
             {
+                Debug.Log("Enemy Squash");
                 Ping();
             }
             //if player is below or on the same level as enemy damage player and kill enemy
             else
             {
+                Debug.Log("Player Damage");
                 //Decrement player hp
                 playerScript.DecrementHp();
                 //Kill enemy
