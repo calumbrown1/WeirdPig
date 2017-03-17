@@ -160,10 +160,11 @@ public class PlayerScript : MonoBehaviour {
     /// <param name="collider">colliding objects tag as string</param>
     public void HandleCollisions(string collider)
     {
+        Debug.Log("Handle Collision with: "+collider);
         switch (collider)
         {
             //If player hits killzone (falls below platforms)
-            case "Killzone":
+            case "KillZone":
                 //Check hp value, if > zero then reset to checkpoint
                 if (hp > 0){
                     DecrementHp();
@@ -176,15 +177,18 @@ public class PlayerScript : MonoBehaviour {
                 break;
             //If player hits obstacle then decrement hp
             case "Obstacle":
-                hp--;
+                Debug.Log("Hit Obstacle");
+                DecrementHp();
                 break;
             //If player hits enemy decrement hp
             case "Enemy":
-                hp--;
+                Debug.Log("Hit Enemy");
+                DecrementHp();
                 break;
             //If player hits speedup object increase timescale by time speed increment from GameController
             case "SpeedUp":
                 Time.timeScale += GameController.GetSpeedInc();
+                Debug.Log("Speedup. New Time: " + Time.timeScale);
                 break;
             //check for grounded
             case "Platform":
@@ -202,6 +206,7 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     void Die()
     {
+        Debug.Log("Player Death");
         isStarted = false;
         //TODO update final multiplier in gameControlScript for use in score
         GameController.SetFinalMultiplier();
@@ -233,7 +238,7 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     void ResetToCheckpoint()
     {
-
+        Debug.Log("Reset To Checkpoint");
     }
 
     /// <summary>
@@ -241,8 +246,8 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     public void DecrementHp()
     {
-        Debug.Log("Damage");
         hp--;
+        Debug.Log(hp);
     }
 
     #endregion
