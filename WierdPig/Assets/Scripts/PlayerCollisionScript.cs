@@ -22,14 +22,12 @@ public class PlayerCollisionScript : MonoBehaviour {
     /// <param name="other"></param>
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Triggered: " + other.gameObject.name);
         //Call collision handelling method since more functionality is availiable outside this method
         playerScript.HandleCollisions(other.gameObject.tag.ToString());
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log("Collided: " + other.gameObject.name);
         //Call collision handelling method in playerScript
         playerScript.HandleCollisions(other.gameObject.tag.ToString());
     }

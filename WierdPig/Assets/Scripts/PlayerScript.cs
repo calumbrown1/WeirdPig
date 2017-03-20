@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 public class PlayerScript : MonoBehaviour {
 
@@ -61,7 +62,12 @@ public class PlayerScript : MonoBehaviour {
     float jumpTimer;
 
     [SerializeField]
-    int slamForce;
+    GameObject projectile;
+
+    [SerializeField]
+    float shootTime;
+
+    float actualShootTime;
 
     #endregion
 
@@ -83,8 +89,11 @@ public class PlayerScript : MonoBehaviour {
         groundDist = playerCollider.GetComponentInParent<Collider2D>().bounds.extents.y;
         //init jump timer
         jumpTimer = jumpTimerMax;
+        //init shoot time
+        actualShootTime = shootTime;
         //Call start game function
         StartGame();
+
     }
 
     void Update ()
@@ -128,15 +137,26 @@ public class PlayerScript : MonoBehaviour {
             player.GetComponent<Rigidbody2D>().gravityScale = 1;
         }
         #endregion
-        #region slamming code
+        #region shoot code
         //If enter button is pressed check if grounded 
         if (Input.GetKeyDown(KeyCode.Return) && isStarted == true){
-            //check if grounded
-            if (!IsGrounded())
-                //le slam time
-                player.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, slamForce));
+            Shoot();
         }
+        if (actualShootTime < shootTime)
+            actualShootTime-= Time.deltaTime;
+        if (actualShootTime <= 0)
+            actualShootTime = shootTime;
+
         #endregion
+    }
+
+    /// <summary>
+    /// Perform necessary checks and shoot projectile
+    /// </summary>
+    void Shoot()
+    {
+        if (actualShootTime == shootTime)
+            Instantiate(projectile, player.transform.position, player.transform.rotation);
     }
 
     #region jumping stuff
@@ -160,7 +180,6 @@ public class PlayerScript : MonoBehaviour {
     /// <param name="collider">colliding objects tag as string</param>
     public void HandleCollisions(string collider)
     {
-        Debug.Log("Handle Collision with: "+collider);
         switch (collider)
         {
             //If player hits killzone (falls below platforms)
