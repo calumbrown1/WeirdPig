@@ -42,24 +42,32 @@ public class EnemyScript : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player") 
         {
-            Debug.Log("PING");
             //Handheld.Vibrate();
             //Get position of player
             Vector2 playerPos = player.transform.position;
             //If player is above enemy then kill it
             if(playerPos.y >= (transform.position.y + 0.25)) 
             {
+                Debug.Log("Enemy Squash");
                 Ping();
+                SpawnScoreObject();
             }
             //if player is below or on the same level as enemy damage player and kill enemy
             else
             {
-                //Decrement player hp
-                playerScript.DecrementHp();
                 //Kill enemy
                 Ping();
             }
-            
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Proj")
+        {
+            Debug.Log("Enemy Shot");
+            Ping();
+            SpawnScoreObject();
         }
     }
     /// <summary>
@@ -67,12 +75,19 @@ public class EnemyScript : MonoBehaviour {
     /// </summary>
     void Ping()
     {
-        Debug.Log("PING");
         //Disable enemy collider
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
         //Disable Fixed camera
         gameObject.GetComponent<Rigidbody2D>().fixedAngle = false;
         //Add force to ping enemy away
         gameObject.GetComponent<Rigidbody2D>().AddForceAtPosition(dieForce, expPos);
+    }
+    
+    /// <summary>
+    /// Create score object when enemy dies
+    /// </summary>
+    void SpawnScoreObject()
+    {
+        Instantiate(scoreObj, transform.position, transform.rotation);
     }
 }

@@ -2,54 +2,79 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 public class PlayerScript : MonoBehaviour {
 
     #region Variables
-    [SerializeField]
+
     //float speed to be used for running
-    float speed;
+    float speed = 5;
+
     //Force applied to player when they die
     Vector2 dieForce;
+
     //Position of "explosion" to be used for explosive force
     Vector2 expPos;
-    [SerializeField]
+
     //Player object
     GameObject player;
+
     //player collider gameobject
     GameObject playerCollider;
+
     //Countdown Text object
     Text countdownText;
+
     //Countdown integer
     int countdown = 3;
+
     //Player health
     int hp = 3;
+
     //Rigidbody 2D of player
     Rigidbody2D playerRigidBody;
+
     //Time delay until score screen launched when player dies
     float scoreScreenDelay = 2.0f;
+
     //Game Timer
     float timer = 0;
+
     //Game is started boolean
     bool isStarted = false;
+
     //Jumping force
     [SerializeField]
     Vector2 jumpForce;
+
     //maximum value for jumping time
     [SerializeField]
     float jumpTimerMax;
+
     //Jumping bool
     bool jumping = false;
+
     //distance to ground
     float groundDist;
+
     //Timer for jumping
     float jumpTimer;
+
     [SerializeField]
-    int slamForce;
+    GameObject projectile;
+
+    [SerializeField]
+    float shootTime;
+
+    float actualShootTime;
+
     #endregion
 
     void Start()
     {
+        //Get Player
+        player = GameObject.Find("Player");
         //get player collider object
         playerCollider = player.transform.GetChild(0).gameObject;
         //Set explosion force vector
@@ -64,8 +89,11 @@ public class PlayerScript : MonoBehaviour {
         groundDist = playerCollider.GetComponentInParent<Collider2D>().bounds.extents.y;
         //init jump timer
         jumpTimer = jumpTimerMax;
+        //init shoot time
+        actualShootTime = shootTime;
         //Call start game function
         StartGame();
+
     }
 
     void Update ()
@@ -76,17 +104,19 @@ public class PlayerScript : MonoBehaviour {
         //Update Timer
         timer += Time.deltaTime;
         //Check health
-        if (hp <=0)
+        if (hp <= 0)
+        {
             Die();
-        // if player is too far behind camera then increase speed to catch up
-        if (transform.position.x < gameObject.transform.position.x - 3)
-            transform.Translate(Vector2.right * speed / 10 * Time.deltaTime);
+        }
 
+        // if player is too far behind camera then increase speed to catch up
+        if (player.transform.position.x < transform.position.x - 3)
+            player.transform.Translate(Vector2.right * speed / 10 * Time.deltaTime);
         #region Jumping code
         //get gravity scale
         float graveScale = playerRigidBody.gravityScale;
         //if presses spacebar then try to jump
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && isStarted == true)
         {
             Jump();
             jumping = true;
@@ -107,17 +137,29 @@ public class PlayerScript : MonoBehaviour {
             player.GetComponent<Rigidbody2D>().gravityScale = 1;
         }
         #endregion
-        #region slamming code
+        #region shoot code
         //If enter button is pressed check if grounded 
-        if (Input.GetKeyDown(KeyCode.Return)){
-            //check if grounded
-            if (!IsGrounded())
-                //le slam time
-                player.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, slamForce));
+        if (Input.GetKeyDown(KeyCode.Return) && isStarted == true){
+            Shoot();
         }
+        if (actualShootTime < shootTime)
+            actualShootTime-= Time.deltaTime;
+        if (actualShootTime <= 0)
+            actualShootTime = shootTime;
+
         #endregion
     }
 
+    /// <summary>
+    /// Perform necessary checks and shoot projectile
+    /// </summary>
+    void Shoot()
+    {
+        if (actualShootTime == shootTime)
+            Instantiate(projectile, player.transform.position, player.transform.rotation);
+    }
+
+    #region jumping stuff
     void Jump()
     {
         if (IsGrounded())
@@ -128,6 +170,7 @@ public class PlayerScript : MonoBehaviour {
     {
         return Physics2D.Raycast(player.transform.position, -Vector2.up, groundDist + 0.1f);
     }
+    #endregion
 
     #region Player Damage, Death and Score Screen
     /// <summary>
@@ -140,37 +183,38 @@ public class PlayerScript : MonoBehaviour {
         switch (collider)
         {
             //If player hits killzone (falls below platforms)
-            case "Killzone":
+            case "KillZone":
                 //Check hp value, if > zero then reset to checkpoint
-                if (hp > 0)
-                {
-                    hp--;
+                if (hp > 0){
+                    DecrementHp();
                     ResetToCheckpoint();
                 }
                 //if <= 0 then player dies
-                else
-                {
+                else{
                     Die();
                 }
                 break;
             //If player hits obstacle then decrement hp
             case "Obstacle":
-                hp--;
+                Debug.Log("Hit Obstacle");
+                DecrementHp();
                 break;
             //If player hits enemy decrement hp
             case "Enemy":
-                hp--;
+                Debug.Log("Hit Enemy");
+                DecrementHp();
                 break;
             //If player hits speedup object increase timescale by time speed increment from GameController
             case "SpeedUp":
                 Time.timeScale += GameController.GetSpeedInc();
+                Debug.Log("Speedup. New Time: " + Time.timeScale);
                 break;
             //check for grounded
             case "Platform":
                 IsGrounded();
                 break;
             default:
-
+                Debug.Log(string.Format("Unknown Collision, {0}", collider));
                 break;
         }
 
@@ -181,6 +225,8 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     void Die()
     {
+        Debug.Log("Player Death");
+        isStarted = false;
         //TODO update final multiplier in gameControlScript for use in score
         GameController.SetFinalMultiplier();
         //Update new score property
@@ -189,7 +235,9 @@ public class PlayerScript : MonoBehaviour {
         GameController.SetTime(timer);
         //Disable Collider and Fixed angle of player
         playerRigidBody.GetComponent<BoxCollider2D>().enabled = false;
-        playerRigidBody.fixedAngle = false;
+        player.GetComponent<BoxCollider2D>().enabled = false;
+        playerRigidBody.constraints = RigidbodyConstraints2D.None;
+        player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
         //Apply explosive force to ping player away
         playerRigidBody.AddForceAtPosition(dieForce, expPos);
         //Invoke Score Screen after wait time
@@ -201,7 +249,7 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     void LoadScoreScreen()
     {
-
+        Application.LoadLevel(2);
     }
 
     /// <summary>
@@ -209,7 +257,7 @@ public class PlayerScript : MonoBehaviour {
     /// </summary>
     void ResetToCheckpoint()
     {
-
+        Debug.Log("Reset To Checkpoint");
     }
 
     /// <summary>
@@ -218,6 +266,7 @@ public class PlayerScript : MonoBehaviour {
     public void DecrementHp()
     {
         hp--;
+        Debug.Log(hp);
     }
 
     #endregion
@@ -234,7 +283,7 @@ public class PlayerScript : MonoBehaviour {
     public void StartGame()
     {
         //Get all game objects
-        GameObject[] allGameObjects = Object.FindObjectsOfType<GameObject>();
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
         //Set countdown text to 3
         countdownText.text = countdown.ToString();
         //Enable all game objects
@@ -273,4 +322,6 @@ public class PlayerScript : MonoBehaviour {
         countdownText.GetComponent<Text>().text = "";
     }
     #endregion
+
+
 }
